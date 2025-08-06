@@ -1,78 +1,89 @@
-// Import required modules
 const express = require('express');
+const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
-const path = require('path');
 const compression = require('compression');
 
-// Initialize app
+// تهيئة التطبيق
 const app = express();
 const server = http.createServer(app);
 
-// Configure Socket.IO with optimizations
+// تحسينات Socket.IO
 const io = socketIo(server, {
   pingInterval: 10000,
   pingTimeout: 5000,
   cors: {
-    origin: "*",
+    origin: process.env.PUBLIC_URL || "*",
     methods: ["GET", "POST"]
   }
 });
 
-// Enable Gzip compression
-app.use(compression());
+// تحديد المسار المطلق للملفات الثابتة
+const clientPath = path.resolve(__dirname, '../client');
 
-// Serve static files with caching
-app.use(express.static(path.join(__dirname, '../client'), {
-  maxAge: '1d'
+// Middlewares
+app.use(compression());
+app.use(express.static(clientPath, {
+  maxAge: '1d',
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }
 }));
 
-// In-memory data store (simplified)
+// حل مشكلة Cannot GET /
+app.get('*', (req, res) => {
+  res.sendFile(path.join(clientPath, 'index.html'));
+});
+
+// تخزين البيانات (لإدارة الوحدات)
 const workshopData = {
   units: {},
   connectedUsers: 0
 };
 
-// Socket.IO events
+// أحداث Socket.IO
 io.on('connection', (socket) => {
-  // Update user count
+  // تحديث عدد المستخدمين
   workshopData.connectedUsers++;
   io.emit('userCount', workshopData.connectedUsers);
-  
-  // Send initial data
-  socket.emit('initialData', { units: workshopData.units });
 
-  // Handle unit movement
+  // إرسال البيانات الأولية
+  socket.emit('initialData', workshopData.units);
+
+  // معالجة نقل الوحدة
   socket.on('moveUnit', (data) => {
     const { unitNumber, newSection, engineer, time } = data;
     
-    // Update unit data
     workshopData.units[unitNumber] = { 
       section: newSection, 
       engineer, 
       time 
     };
     
-    // Broadcast update
-    io.emit('unitMoved', { unitNumber, newSection, engineer, time });
+    io.emit('unitMoved', data);
   });
 
-  // Handle disconnection
+  // معالجة قطع الاتصال
   socket.on('disconnect', () => {
     workshopData.connectedUsers--;
     io.emit('userCount', workshopData.connectedUsers);
   });
 });
 
-// Error handling middleware
+// معالجة الأخطاء
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  console.error('🔥 Server Error:', err);
+  res.status(500).send('حدث خطأ في الخادم');
 });
 
-// Start server
+// بدء التشغيل
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📡 Socket.IO ready for connections`);
+  console.log(`
+  🚀 Server running on: http://localhost:${PORT}
+  📂 Serving files from: ${clientPath}
+  🌍 Public URL: ${process.env.PUBLIC_URL || 'Not configured'}
+  `);
 });
