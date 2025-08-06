@@ -2,39 +2,143 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>إدارة الوحدات في الورشة</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="connectionStatus" class="connection-status">
-        <span id="connectionText">جاري الاتصال بالخادم...</span>
-        <span id="userCount">0 مستخدم متصل</span>
-    </div>
-
     <div id="loginScreen" class="login-screen">
         <div class="login-container">
             <h2>تسجيل الدخول</h2>
             <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
             <div id="loginError" class="error-message"></div>
-            <button id="loginBtn" class="login-button">دخول</button>
+            <button id="loginBtn">دخول</button>
         </div>
     </div>
 
-    <div class="app-container" id="mainApp">
+    <div class="app-container" id="mainApp" style="display: none;">
         <header class="main-header">
             <h1>إدارة الوحدات في الورشة</h1>
             <div class="engineer-info">
                 <span id="currentEngineer">المهندس: غير معروف</span>
-                <button id="logoutBtn" class="logout-button">تسجيل الخروج</button>
+                <button id="logoutBtn">تسجيل الخروج</button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="unitSearch" placeholder="ابحث عن وحدة...">
+                <button id="clearSearch">مسح البحث</button>
             </div>
         </header>
-        
-        <!-- باقي محتوى واجهة الورشة -->
+
+        <div class="section-stats-container">
+            <div class="left-stats">
+                <div>Cargo: <span id="cargo-stat">0</span></div>
+                <div>Tipper: <span id="tipper-stat">0</span></div>
+                <div>Tanker: <span id="tanker-stat">0</span></div>
+            </div>
+            
+            <div class="right-stats">
+                <div>Silo: <span id="silo-stat">0</span></div>
+                <div>Rehb: <span id="rehb-stat">0</span></div>
+                <div>OverHaull: <span id="overhaul-stat">0</span></div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div>الانتظار: <span id="waiting-count">0</span></div>
+            <div>الورشة: <span id="workshop-count">0</span></div>
+            <div>انتظار الإسبير: <span id="spare-part-count">0</span></div>
+            <div>خارج الورشة: <span id="out-count">0</span></div>
+        </div>
+
+        <div class="main-grid-container">
+            <div class="workshop-column">
+                <div id="waiting-workshop" class="drop-zone">
+                    <h2>وحدات الانتظار <span class="count-badge">0</span></h2>
+                    <div class="units-grid" id="waiting-units"></div>
+                </div>
+            </div>
+
+            <div class="workshop-column">
+                <div id="cargo" class="subsection-drop-zone">
+                    <h3>Cargo <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="tipper" class="subsection-drop-zone">
+                    <h3>Tipper <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+            </div>
+
+            <div class="workshop-column">
+                <div id="tanker" class="subsection-drop-zone">
+                    <h3>Tanker <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="silo" class="subsection-drop-zone">
+                    <h3>Silo <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+            </div>
+
+            <div class="workshop-column">
+                <div id="rehb" class="subsection-drop-zone">
+                    <h3>Rehb <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="overhaul" class="subsection-drop-zone">
+                    <h3>OverHaull <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+            </div>
+
+            <div class="workshop-column">
+                <div id="spare-part" class="subsection-drop-zone">
+                    <h3>انتظار الإسبير <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="out-workshop" class="drop-zone">
+                    <h2>وحدات خارج الورشة <span class="count-badge">0</span></h2>
+                    <div class="units-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <dialog id="workshopDialog">
+            <h3>اختر قسم الورشة</h3>
+            <div class="dialog-options">
+                <button data-section="cargo">Cargo</button>
+                <button data-section="tipper">Tipper</button>
+                <button data-section="tanker">Tanker</button>
+                <button data-section="silo">Silo</button>
+                <button data-section="rehb">Rehb</button>
+                <button data-section="overhaul">OverHaull</button>
+            </div>
+            <button id="cancelWorkshopMove">إلغاء</button>
+        </dialog>
+
+        <dialog id="confirmDialog">
+            <h3 id="confirmMessage">هل أنت متأكد؟</h3>
+            <div class="dialog-options">
+                <button id="confirmYes">نعم</button>
+                <button id="confirmNo">لا</button>
+            </div>
+        </dialog>
+
+        <dialog id="actionDialog">
+            <h3 id="actionTitle">اختر الإجراء المطلوب</h3>
+            <div class="dialog-options">
+                <button id="moveToSpare">نقل إلى انتظار الإسبير</button>
+                <button id="moveOut">إخراج من الورشة</button>
+            </div>
+            <button id="cancelAction">إلغاء</button>
+        </dialog>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
