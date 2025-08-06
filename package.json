@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "compression": "^1.8.1",
-    "express": "^4.21.2",
-    "socket.io": "^4.8.1"
-  }
-}
