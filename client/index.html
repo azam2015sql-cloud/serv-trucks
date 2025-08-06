@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة الوحدات في الورشة</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,25 +18,20 @@
             <h2>تسجيل الدخول</h2>
             <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
             <div id="loginError" class="error-message"></div>
-            <button id="loginBtn">دخول</button>
+            <button id="loginBtn" class="login-button">دخول</button>
         </div>
     </div>
 
-    <div class="app-container" id="mainApp" style="display: none;">
+    <div class="app-container" id="mainApp">
         <header class="main-header">
             <h1>إدارة الوحدات في الورشة</h1>
             <div class="engineer-info">
                 <span id="currentEngineer">المهندس: غير معروف</span>
-                <button id="logoutBtn">تسجيل الخروج</button>
-            </div>
-            <div class="search-container">
-                <input type="text" id="unitSearch" placeholder="ابحث عن وحدة...">
-                <button id="clearSearch">مسح البحث</button>
+                <button id="logoutBtn" class="logout-button">تسجيل الخروج</button>
             </div>
         </header>
-
-        <!-- باقي الهيكل يبقى كما هو -->
-        <!-- ... -->
+        
+        <!-- باقي محتوى واجهة الورشة -->
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
