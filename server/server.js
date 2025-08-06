@@ -7,20 +7,44 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// مسار الملفات الثابتة
-const clientPath = path.join(__dirname, '../client');
-
 // Middleware لخدمة الملفات الثابتة
-app.use(express.static(clientPath));
+app.use(express.static(path.join(__dirname, 'client')));
 
-// جميع الطلبات ترجع index.html
+// Middleware لتحليل JSON
+app.use(express.json());
+
+// جميع الطلبات ترجع index.html لتطبيق SPA
 app.get('*', (req, res) => {
-  res.sendFile(path.join(clientPath, 'index.html'));
+  res.sendFile(path.join(__dirname, 'client', 'index.html'));
 });
 
-// أحداث Socket.io
+// تخزين حالة الوحدات على السيرفر
+let workshopUnits = {};
+
+// أحداث Socket.io لمزامنة البيانات بين العملاء
 io.on('connection', (socket) => {
   console.log('مستخدم جديد متصل');
+  
+  // إرسال الحالة الحالية للوحدات عند الاتصال
+  socket.emit('initialData', workshopUnits);
+  
+  // استقبال تحديثات الوحدات من العميل
+  socket.on('updateUnit', (unitData) => {
+    // تحديث البيانات على السيرفر
+    workshopUnits[unitData.unitNumber] = {
+      section: unitData.section,
+      lastMoveTime: unitData.lastMoveTime,
+      engineer: unitData.engineer
+    };
+    
+    // بث التحديث لجميع العملاء المتصلين
+    io.emit('unitUpdated', unitData);
+  });
+  
+  // طلب البيانات الحالية
+  socket.on('requestData', () => {
+    socket.emit('initialData', workshopUnits);
+  });
   
   socket.on('disconnect', () => {
     console.log('مستخدم قطع الاتصال');
