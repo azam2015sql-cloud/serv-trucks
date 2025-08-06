@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // عرض شاشة تسجيل الدخول أولاً
     loginScreen.style.display = 'flex';
+    mainApp.style.display = 'none';
     
     // حدث تسجيل الدخول
     loginBtn.addEventListener('click', () => {
@@ -106,10 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadUnitsFromStorage();
             }
             
+            initializeApp();
+            
             // طلب البيانات الحالية من السيرفر
             socket.emit('requestData');
-            
-            initializeApp();
             
             // الاستماع لتحديثات الوحدات من السيرفر
             socket.on('unitUpdated', (unitData) => {
