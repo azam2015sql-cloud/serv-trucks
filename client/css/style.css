@@ -1,0 +1,430 @@
+:root {
+    --primary-blue: #2c3e50;
+    --secondary-green: #27ae60;
+    --accent-orange: #e67e22;
+    --danger-red: #e74c3c;
+    --white: #ffffff;
+    --light-grey: #ecf0f1;
+    --medium-grey: #bdc3c7;
+    --dark-grey: #7f8c8d;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background-color: var(--light-grey);
+    min-height: 100vh;
+    padding: 10px;
+    overflow-x: hidden;
+}
+
+.login-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.login-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-container h2 {
+    color: var(--primary-blue);
+    margin-bottom: 20px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--medium-grey);
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--secondary-green);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-container button:hover {
+    background-color: #219653;
+}
+
+.error-message {
+    color: var(--danger-red);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px var(--shadow-light);
+}
+
+.main-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    position: relative;
+}
+
+.engineer-info {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: var(--light-grey);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+#logoutBtn {
+    padding: 5px 10px;
+    background-color: var(--danger-red);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+#logoutBtn:hover {
+    background-color: #c0392b;
+}
+
+.main-header h1 {
+    color: var(--primary-blue);
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+#unitSearch, #clearSearch {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 30px;
+    border: 1px solid var(--medium-grey);
+    transition: all 0.3s ease;
+}
+
+#unitSearch {
+    flex: 1;
+    background-color: var(--white);
+}
+
+#clearSearch {
+    background-color: var(--medium-grey);
+    color: var(--dark-grey);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#clearSearch:hover {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.section-stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.left-stats, .right-stats {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--white);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.left-stats div, .right-stats div {
+    display: flex;
+    gap: 5px;
+}
+
+.left-stats span, .right-stats span {
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+.stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.stats-bar div {
+    display: flex;
+    gap: 5px;
+}
+
+.main-grid-container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+}
+
+.workshop-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 250px;
+    flex: 1;
+}
+
+.drop-zone, .subsection-drop-zone {
+    border-radius: 10px;
+    padding: 15px;
+    background-color: var(--light-grey);
+    box-shadow: 0 2px 5px var(--shadow-light);
+    min-height: 200px;
+}
+
+.drop-zone h2, .subsection-drop-zone h3 {
+    margin-bottom: 10px;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.count-badge {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.units-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    min-height: 60px;
+    border-radius: 8px;
+    background-color: var(--white);
+}
+
+.draggable-unit {
+    background-color: var(--accent-orange);
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: move;
+    user-select: none;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    height: 70px;
+    position: relative;
+}
+
+.unit-number {
+    font-size: 1em;
+    margin-bottom: 2px;
+}
+
+.unit-time, .unit-engineer {
+    font-size: 0.6em;
+    font-weight: normal;
+    text-align: center;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.draggable-unit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-dark);
+}
+
+.drag-over {
+    background-color: rgba(44, 62, 80, 0.1);
+    border: 2px dashed var(--primary-blue);
+}
+
+/* تنسيقات الحوارات */
+dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 90%;
+    margin: auto;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+dialog h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--primary-blue);
+}
+
+.dialog-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+dialog button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#moveToSpare {
+    background-color: var(--secondary-green);
+    color: white;
+}
+
+#moveOut {
+    background-color: var(--danger-red);
+    color: white;
+}
+
+#cancelAction, #cancelWorkshopMove, #confirmNo {
+    width: 100%;
+    margin-top: 15px;
+    background-color: var(--medium-grey);
+    color: var(--dark-grey);
+}
+
+/* تأثيرات اللمس للأجهزة المحمولة */
+@media (hover: none) {
+    .draggable-unit:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* التجاوب مع أحجام الشاشات المختلفة */
+@media (max-width: 1200px) {
+    .main-grid-container {
+        flex-wrap: wrap;
+    }
+    
+    .workshop-column {
+        min-width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .units-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+    
+    .left-stats, .right-stats {
+        min-width: 100%;
+    }
+    
+    .stats-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .workshop-column {
+        min-width: 100%;
+    }
+    
+    .engineer-info {
+        position: static;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px;
+    }
+    
+    .units-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    }
+    
+    .draggable-unit {
+        height: 65px;
+        font-size: 0.9em;
+    }
+    
+    dialog {
+        padding: 20px 15px;
+    }
+    
+    .login-container {
+        padding: 20px;
+    }
+}
