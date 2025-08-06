@@ -1,26 +1,33 @@
 const express = require('express');
 const path = require('path');
-const app = express();
+const http = require('http');
+const socketIo = require('socket.io');
 
-// الحل الجذري للمسارات
-const clientPath = path.join(__dirname, '..', 'client');
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// تحديد مسار الملفات الثابتة
+const clientPath = path.join(__dirname, '../client');
 
 // Middleware لخدمة الملفات الثابتة
 app.use(express.static(clientPath));
 
-// حل نهائي لجميع المسارات
+// جميع الطلبات ترجع index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(clientPath, 'index.html'), (err) => {
-    if (err) {
-      console.error('Failed to send file:', err);
-      res.status(404).send('File not found');
-    }
-  });
+    res.sendFile(path.join(clientPath, 'index.html'));
+});
+
+// أحداث Socket.io
+io.on('connection', (socket) => {
+    console.log('مستخدم جديد متصل');
+    
+    socket.on('disconnect', () => {
+        console.log('مستخدم قطع الاتصال');
+    });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Client path: ${clientPath}`);
-  console.log(`Try: http://localhost:${PORT}/index.html`);
+server.listen(PORT, () => {
+    console.log(`الخادم يعمل على المنفذ ${PORT}`);
 });
