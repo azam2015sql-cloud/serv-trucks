@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // اتصال Socket.io
+    const socket = io();
+    
     // بيانات المهندسين وكلمات المرور
     const engineers = {
         '11742': 'سفيان',
@@ -103,7 +106,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadUnitsFromStorage();
             }
             
+            // طلب البيانات الحالية من السيرفر
+            socket.emit('requestData');
+            
             initializeApp();
+            
+            // الاستماع لتحديثات الوحدات من السيرفر
+            socket.on('unitUpdated', (unitData) => {
+                if (unitData.engineer !== currentEngineer) {
+                    updateUnitFromServer(unitData);
+                }
+            });
+            
+            // استقبال البيانات الأولية من السيرفر
+            socket.on('initialData', (serverData) => {
+                if (Object.keys(serverData).length > 0) {
+                    unitsData = serverData;
+                    localStorage.setItem('workshopUnits', JSON.stringify(unitsData));
+                    loadUnitsFromStorage();
+                }
+            });
         } else {
             loginError.textContent = 'كلمة المرور غير صحيحة';
         }
@@ -115,7 +137,21 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordInput.value = '';
         loginError.textContent = '';
         loginScreen.style.display = 'flex';
+        
+        // إزالة مستمعي الأحداث
+        socket.off('unitUpdated');
+        socket.off('initialData');
     });
+    
+    // دالة لتحديث الوحدة من السيرفر
+    function updateUnitFromServer(unitData) {
+        const { unitNumber, section, lastMoveTime, engineer } = unitData;
+        unitsData[unitNumber] = { section, lastMoveTime, engineer };
+        localStorage.setItem('workshopUnits', JSON.stringify(unitsData));
+        
+        // إعادة تحميل الوحدات
+        loadUnitsFromStorage();
+    }
     
     // تهيئة الوحدات
     function initializeUnits() {
@@ -135,6 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastMoveTime: getCurrentDateTime(),
                 engineer: currentEngineer
             };
+            
+            // إرسال التحديث للسيرفر
+            socket.emit('updateUnit', unitsData[num]);
         });
         
         localStorage.setItem('workshopUnits', JSON.stringify(unitsData));
@@ -403,13 +442,18 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAllCounts();
             
             // حفظ البيانات في localStorage
-            unitsData[unitNumber] = {
+            const unitData = {
+                unitNumber,
                 section: parentElement.id,
                 lastMoveTime: getCurrentDateTime(),
                 engineer: currentEngineer
             };
             
+            unitsData[unitNumber] = unitData;
             localStorage.setItem('workshopUnits', JSON.stringify(unitsData));
+            
+            // إرسال التحديث للسيرفر
+            socket.emit('updateUnit', unitData);
         }
     }
     
