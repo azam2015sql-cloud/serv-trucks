@@ -8,50 +8,25 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 // Middleware لخدمة الملفات الثابتة
-app.use(express.static(path.join(__dirname, 'client')));
+app.use(express.static(path.join(__dirname, '../client')));
+app.use('/css', express.static(path.join(__dirname, '../client/css')));
+app.use('/js', express.static(path.join(__dirname, '../client/js')));
 
-// Middleware لتحليل JSON
-app.use(express.json());
-
-// جميع الطلبات ترجع index.html لتطبيق SPA
+// جميع الطلبات ترجع index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'index.html'));
+    res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-// تخزين حالة الوحدات على السيرفر
-let workshopUnits = {};
-
-// أحداث Socket.io لمزامنة البيانات بين العملاء
+// أحداث Socket.io
 io.on('connection', (socket) => {
-  console.log('مستخدم جديد متصل');
-  
-  // إرسال الحالة الحالية للوحدات عند الاتصال
-  socket.emit('initialData', workshopUnits);
-  
-  // استقبال تحديثات الوحدات من العميل
-  socket.on('updateUnit', (unitData) => {
-    // تحديث البيانات على السيرفر
-    workshopUnits[unitData.unitNumber] = {
-      section: unitData.section,
-      lastMoveTime: unitData.lastMoveTime,
-      engineer: unitData.engineer
-    };
+    console.log('مستخدم جديد متصل');
     
-    // بث التحديث لجميع العملاء المتصلين
-    io.emit('unitUpdated', unitData);
-  });
-  
-  // طلب البيانات الحالية
-  socket.on('requestData', () => {
-    socket.emit('initialData', workshopUnits);
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('مستخدم قطع الاتصال');
-  });
+    socket.on('disconnect', () => {
+        console.log('مستخدم قطع الاتصال');
+    });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`الخادم يعمل على المنفذ ${PORT}`);
+    console.log(`الخادم يعمل على المنفذ ${PORT}`);
 });
